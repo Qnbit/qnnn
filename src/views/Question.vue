@@ -1,122 +1,194 @@
 <template>
-<!--    搜索框-->
     <div>
-        <a-form
-            ref="formRef"
-            name="advanced_search"
-            class="ant-advanced-search-form"
-            :model="formState"
-            @finish="onFinish"
-        >
-            <a-row :gutter="24">
-                <template v-for="i in 10" :key="i">
-                    <a-col v-show="expand || i <= 6" :span="8">
-                        <a-form-item
-                            :name="`field-${i}`"
-                            :label="`field-${i}`"
-                            :rules="[{ required: true, message: 'input something' }]"
-                        >
-                            <a-input v-model:value="formState[`field-${i}`]" placeholder="placeholder"></a-input>
-                        </a-form-item>
-                    </a-col>
-                </template>
-            </a-row>
-            <a-row>
-                <a-col :span="24" style="text-align: right">
-                    <a-button type="primary" html-type="submit">Search</a-button>
-                    <a-button style="margin: 0 8px" @click="() => formRef.resetFields()">Clear</a-button>
-                    <a style="font-size: 12px" @click="expand = !expand">
-                        <template v-if="expand">
-                            <UpOutlined />
-                        </template>
-                        <template v-else>
-                            <DownOutlined />
-                        </template>
-                        Collapse
+       <div style="height: 70px">
+<!--           搜索框-->
+           <a-select
+               v-model:value="value1"
+               mode="tags"
+               style="width: 10%"
+               placeholder="题目类型"
+               :options="options1"
+               @change="handleChange"
+           ></a-select>
+           <a-select
+               v-model:value="value2"
+               mode="tags"
+               style="width: 10%;margin-left:3%"
+               placeholder="难度"
+               :options="options2"
+               @change="handleChange"
+           ></a-select>
+           <a-select
+               v-model:value="value3"
+               mode="tags"
+               style="width: 10%;margin-left:3%"
+               placeholder="标签"
+               :options="options3"
+               @change="handleChange"
+           ></a-select>
+
+           <a-space direction="vertical">
+               <a-input-search
+                   v-model:value="valueSearch"
+                   placeholder="搜索题目"
+                   enter-button
+                   @search="onSearch"
+                   style="margin-left: 20%"
+               />
+           </a-space>
+       </div>
+<div>
+    <!-- 表格 -->
+    <a-table :columns="tableColumns" :data-source="tableData" >
+        <template #headerCell="{ column }">
+            <template v-if="column.dataIndex === 'name'">
+                <span>
+                    <smile-outlined />
+                    名称qq
+                </span>
+            </template>
+        </template>
+
+        <template #bodyCell="{ column, record }">
+            <template v-if="column.dataIndex === 'name'">
+                <a>
+                    {{ record.name }}
+                </a>
+            </template>
+            <template v-else-if="column.dataIndex === 'tags'">
+                <span>
+                    <a-tag
+                        v-for="tag in record.tags"
+                        :key="tag"
+                        :color="tag === 'loser' ? 'volcano' : tag.length > 5 ? 'geekblue' : 'green'"
+                    >
+                        {{ tag.toUpperCase() }}
+                    </a-tag>
+                </span>
+            </template>
+            <template v-else-if="column.dataIndex === 'action'">
+                <span>
+                    <a>Invite 一 {{ record.name }}</a>
+                    <a-divider type="vertical" />
+                    <a>Delete</a>
+                    <a-divider type="vertical" />
+                    <a class="ant-dropdown-link">
+                        More actions
+                        <down-outlined />
                     </a>
-                </a-col>
-            </a-row>
-        </a-form>
-        <div class="search-result-list">Search Result List</div>
-    </div>
-<!--    选择框-->
-    <div>
-        <a-select
-            v-model:value="value"
-            mode="tags"
-            style="width: 10%"
-            placeholder="请选择"
-            :options="options"
-            @change="handleChange"
-        ></a-select>
+                </span>
+            </template>
+        </template>
+    </a-table>
+</div>
     </div>
 </template>
 
-<script>
-import {DownOutlined, UpOutlined} from "@ant-design/icons-vue";
-import { defineComponent, reactive, ref } from 'vue';
+<script setup>
+import { DownOutlined } from "@ant-design/icons-vue";
+import { ref, reactive } from 'vue';
 
 
-// export default {
-//     name: "Question",
-//     components: {UpOutlined, DownOutlined}
-// }
-
-export default defineComponent({
-    name: "Question",
-    components: {
-        DownOutlined,
-        UpOutlined,
+const valueSearch = ref('');
+const onSearch = searchValue => {
+    console.log('use value', searchValue);
+    console.log('or use this.value', valueSearch.value);
+};
+const handleChange = value => {
+    console.log(`selected ${value}`);
+};
+const value1 = ref([]);
+const value2 = ref([]);
+const value3 = ref([]);
+const options1 = ref([
+    {
+        value: 'array',
+        label: '数组',
     },
-    setup() {
-        const expand = ref(false);
-        const formRef = ref();
-        const formState = reactive({});
-        const onFinish = values => {
-            console.log('Received values of form: ', values);
-            console.log('formState: ', formState);
-        };
-
-        const handleChange = value => {
-            console.log(`selected ${value}`);
-        };
-        return {
-            formRef,
-            formState,
-            expand,
-            onFinish,
-            value: ref([]),
-            handleChange,
-            options: [...Array(5)].map((_, i) => ({
-                value: (i + 10).toString(36) + (i + 1),
-            })),
-        };
+    {
+        value: 'string',
+        label: '字符串',
     },
-});
+    {
+        value: 'linkedList',
+        label: '链表',
+    },
+    {
+        value: 'sort',
+        label: '排序',
+    },
+    {
+        value: 'tree',
+        label: '二叉树',
+    },
+    {
+        value: 'hashTable',
+        label: '哈希表',
+    },
+]);
+const options2 = ref([
+    {
+        value: 'easy',
+        label: '简单',
+    },
+    {
+        value: 'medium',
+        label: '中等',
+    },
+    {
+        value: 'hard',
+        label: '困难',
+    },
+]);
+const options3 = ref([
+    {
+        value: 'math',
+        label: '数学',
+    },
+    {
+        value: 'sort',
+        label: '排序',
+    },
+    {
+        value: 'search',
+        label: '查找',
+    },
+    {
+        value: 'sum',
+        label: '求和',
+    },
+]);
+const tableColumns = [
+    { title: 'Name', dataIndex: 'name', key: 'name' },
+    { title: '年龄', dataIndex: 'age', key: 'age' },
+    { title: '地址', dataIndex: 'address', key: 'address' },
+    { title: '标签', key: 'tags', dataIndex: 'tags' },
+    { title: 'Action', key: 'action' },
+];
 
+const tableData = [
+    { key: '1', name: 'John Brown', age: 32, address: 'New York No. 1 Lake Park', tags: ['nice', 'developer'] },
+    { key: '2', name: 'Jim Green', age: 42, address: 'London No. 1 Lake Park', tags: ['loser','Uber'] },
+    { key: '3', name: 'Joe Black', age: 32, address: 'Sidney No. 1 Lake Park', tags: ['cool', 'teacher'] },
+    { key: '1', name: 'John Brown', age: 32, address: 'New York No. 1 Lake Park', tags: ['nice', 'developer'] },
+    { key: '2', name: 'Jim Green', age: 42, address: 'London No. 1 Lake Park', tags: ['loser','Uber'] },
+    { key: '3', name: 'Joe Black', age: 32, address: 'Sidney No. 1 Lake Park', tags: ['cool', 'teacher'] },
+    { key: '1', name: 'John Brown', age: 32, address: 'New York No. 1 Lake Park', tags: ['nice', 'developer'] },
+    { key: '2', name: 'Jim Green', age: 42, address: 'London No. 1 Lake Park', tags: ['loser','Uber'] },
+    { key: '3', name: 'Joe Black', age: 32, address: 'Sidney No. 1 Lake Park', tags: ['cool', 'teacher'] },
+    { key: '1', name: 'John Brown', age: 32, address: 'New York No. 1 Lake Park', tags: ['nice', 'developer'] },
+    { key: '2', name: 'Jim Green', age: 42, address: 'London No. 1 Lake Park', tags: ['loser','Uber'] },
+    { key: '3', name: 'Joe Black', age: 32, address: 'Sidney No. 1 Lake Park', tags: ['cool', 'teacher'] },
+];
+
+const expand = ref(false);
+const formState = reactive({});
 </script>
 
+
 <style scoped>
-#components-form-demo-advanced-search .ant-form {
-    max-width: none;
-}
-#components-form-demo-advanced-search .search-result-list {
-    margin-top: 16px;
-    border: 1px dashed #e9e9e9;
-    border-radius: 2px;
-    background-color: #fafafa;
-    min-height: 200px;
-    text-align: center;
-    padding-top: 80px;
-}
-[data-theme='dark'] .ant-advanced-search-form {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid #434343;
-    padding: 24px;
-    border-radius: 2px;
-}
-[data-theme='dark'] #components-form-demo-advanced-search .search-result-list {
-    border: 1px dashed #434343;
-    background: rgba(255, 255, 255, 0.04);
+.a-table {
+    max-width: 100%;
+    margin: 16px auto;
 }
 </style>
