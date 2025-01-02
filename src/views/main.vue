@@ -5,7 +5,7 @@
 <a-layout>
 <a-layout-sider style="background-color: cornsilk">
     <div style="text-align: center">
-QWER
+Uber
     </div>
 </a-layout-sider>
     <a-layout-content>
@@ -30,12 +30,28 @@ QWER
                         <a-menu-item key="setting:2">Option 2</a-menu-item>
                     </a-menu-item-group>
                 </a-sub-menu>
+<!--                contests-->
+                <a-menu-item key="contests">
+                    <template #icon>
+<!--                        <mail-outlined />-->
+<!--                        <PaperClipOutlined />-->
+                        <car-outlined />
+                    </template>
+                    <RouterLink to="contests">比赛页面</RouterLink>
+                </a-menu-item>
                 <a-menu-item key="alipay">
                     <a href="https://antdv.com" target="_blank" rel="noopener noreferrer">
                         Navigation Four - Link
                     </a>
                 </a-menu-item>
                 <a-menu-item key="12">最右边</a-menu-item>
+                <a-menu-item key="qwer">
+                    <template #icon>
+                        <mail-outlined />
+                    </template>
+                    <!--                    题目页面-->
+                    <RouterLink to="about">关于页面QQQ</RouterLink>
+                </a-menu-item>
             </a-menu>
     </a-layout-content>
     <a-layout-sider style="text-align: right">
@@ -76,11 +92,10 @@ QWER
 <script>
 import { defineComponent, ref } from 'vue';
 import router from "@/router/index.js";
-import {AppstoreOutlined, MailOutlined, SettingOutlined, UserOutlined} from "@ant-design/icons-vue";
-
+import {AppstoreOutlined, MailOutlined, CarOutlined,SettingOutlined, UserOutlined} from "@ant-design/icons-vue";
 
 export default defineComponent({
-    components: {UserOutlined, MailOutlined, AppstoreOutlined, SettingOutlined},
+    components: {UserOutlined, MailOutlined, AppstoreOutlined, SettingOutlined,CarOutlined},
     methods: {
         router() {
             return router

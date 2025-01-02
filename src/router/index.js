@@ -11,6 +11,7 @@ const router = createRouter({
         {path: 'home', name:'home' , meta: {title: '首页'},component:Home,},
         {path: 'question', name:'question' , meta: {title: '题目页面'},component: () => import('../views/Question.vue')},
         {path: 'about', name:'about' , meta: {title: '关于我们'},component: () => import('../views/About.vue')},
+        {path: 'contests', name:'contests' , meta: {title: '比赛页面'},component: () => import('../views/Contests.vue')},
       ]
     },
 
